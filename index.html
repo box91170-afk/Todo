@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ma To-Do List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .theme-dark-neon { --bg: #030712; --accent: #6366f1; }
+        body { background-color: var(--bg, #020617); }
+    </style>
+</head>
+<body class="min-h-screen overflow-x-hidden p-4 flex items-center justify-center">
+
+    <main class="w-full max-w-md bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-3xl p-5 shadow-2xl">
+        <header class="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
+            <div class="flex gap-2">
+                <button onclick="switchTab('active')" class="px-3 py-1 bg-white/10 text-white rounded-lg text-xs font-bold">Tâches (<span id="count-active">0</span>)</button>
+                <button onclick="switchTab('deleted')" class="px-3 py-1 text-slate-400 rounded-lg text-xs font-bold">Corbeille (<span id="count-deleted">0</span>)</button>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="shareData()" class="text-slate-400 hover:text-indigo-400"><i data-lucide="share-2" class="w-5 h-5"></i></button>
+                <button onclick="downloadData()" class="text-slate-400 hover:text-emerald-400"><i data-lucide="download" class="w-5 h-5"></i></button>
+            </div>
+        </header>
+
+        <form id="todo-form" class="flex gap-2 mb-4">
+            <input type="text" id="task-input" required placeholder="Nouvelle tâche..." class="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white text-sm focus:outline-none">
+            <button type="submit" class="px-4 bg-indigo-600 text-white rounded-xl"><i data-lucide="plus" class="w-5 h-5"></i></button>
+        </form>
+
+        <div id="tasks-container" class="space-y-2"></div>
+    </main>
+
+    <script>
+        let tasks = JSON.parse(localStorage.getItem('my_tasks')) || [];
+        let currentTab = 'active';
+
+        function save() { localStorage.setItem('my_tasks', JSON.stringify(tasks)); render(); }
+
+        function render() {
+            const container = document.getElementById('tasks-container');
+            container.innerHTML = '';
+            const filtered = tasks.filter(t => currentTab === 'active' ? !t.deleted : t.deleted);
+            
+            filtered.forEach(task => {
+                const div = document.createElement('div');
+                div.className = "flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5 text-white";
+                div.innerHTML = `<span class="${task.completed ? 'line-through opacity-50' : ''} text-sm cursor-pointer" onclick="toggleTask('${task.id}')">${task.title}</span>
+                                 <button onclick="moveToTrash('${task.id}')" class="text-rose-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>`;
+                container.appendChild(div);
+            });
+            
+            document.getElementById('count-active').textContent = tasks.filter(t => !t.deleted).length;
+            document.getElementById('count-deleted').textContent = tasks.filter(t => t.deleted).length;
+            lucide.createIcons();
+        }
+
+        // Partage natif
+        async function shareData() {
+            const text = tasks.filter(t => !t.deleted).map(t => t.title).join('\n');
+            if (navigator.share) {
+                try { await navigator.share({ title: 'Ma liste', text: text }); } catch (e) {}
+            } else {
+                alert("Votre appareil ne supporte pas le partage direct. Copiez votre liste via le téléchargement.");
+            }
+        }
+
+        // Téléchargement fichier .txt
+        function downloadData() {
+            const text = tasks.filter(t => !t.deleted).map(t => t.title).join('\n');
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = 'ma-liste.txt'; a.click();
+        }
+
+        function toggleTask(id) { tasks = tasks.map(t => t.id === id ? {...t, completed: !t.completed} : t); save(); }
+        function moveToTrash(id) { tasks = tasks.map(t => t.id === id ? {...t, deleted: true} : t); save(); }
+        function switchTab(tab) { currentTab = tab; render(); }
+
+        document.getElementById('todo-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const input = document.getElementById('task-input');
+            tasks.unshift({ id: Date.now().toString(), title: input.value, completed: false, deleted: false });
+            input.value = '';
+            save();
+        });
+
+        render();
+    </script>
+</body>
+</html>
