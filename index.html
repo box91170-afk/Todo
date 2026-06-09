@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🎂 Rappels d'Anniversaires</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #fdf6ec;
+      --ink: #1a1008;
+      --amber: #e8870a;
+      --amber-light: #f5b84a;
+      --rose: #c94a4a;
+      --sage: #4a7c59;
+      --card-bg: #fffdf8;
+      --border: #e8d9c0;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      min-height: 100vh;
+      background-image:
+        radial-gradient(ellipse at 10% 20%, rgba(232,135,10,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 90% 80%, rgba(201,74,74,0.06) 0%, transparent 50%);
+    }
+
+    /* ── HEADER ── */
+    header {
+      text-align: center;
+      padding: 3rem 2rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      top: -40px; left: 50%;
+      transform: translateX(-50%);
+      width: 320px; height: 320px;
+      background: radial-gradient(circle, rgba(232,135,10,0.12) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .header-icon { font-size: 3.5rem; display: block; margin-bottom: 0.5rem; animation: float 3s ease-in-out infinite; }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+    header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+    header h1 span { color: var(--amber); }
+    header p { margin-top: 0.6rem; color: #7a6040; font-size: 0.95rem; font-weight: 300; }
+
+    /* ── LAYOUT ── */
+    .container { max-width: 860px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+
+    /* ── TABS ── */
+    .tabs { display: flex; gap: 0.4rem; background: rgba(255,255,255,0.6); border: 1px solid var(--border); border-radius: 14px; padding: 0.35rem; margin-bottom: 2rem; backdrop-filter: blur(6px); }
+    .tab-btn {
+      flex: 1; padding: 0.7rem 1rem;
+      border: none; border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem; font-weight: 500;
+      cursor: pointer; transition: all 0.25s;
+      color: #7a6040; background: transparent;
+    }
+    .tab-btn.active { background: var(--amber); color: #fff; box-shadow: 0 4px 14px rgba(232,135,10,0.35); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 4px 30px rgba(26,16,8,0.06);
+    }
+    .card h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem; font-weight: 700;
+      margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+
+    /* ── FORM ── */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media(max-width:520px) { .form-grid { grid-template-columns: 1fr; } }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-group.full { grid-column: 1/-1; }
+    label { font-size: 0.8rem; font-weight: 500; color: #7a6040; text-transform: uppercase; letter-spacing: 0.06em; }
+    input, select, textarea {
+      padding: 0.75rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.92rem;
+      background: #fffdf8;
+      color: var(--ink);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--amber);
+      box-shadow: 0 0 0 3px rgba(232,135,10,0.12);
+    }
+    textarea { resize: vertical; min-height: 90px; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      padding: 0.8rem 1.6rem;
+      border: none; border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.92rem; font-weight: 500;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-primary { background: var(--amber); color: #fff; box-shadow: 0 4px 14px rgba(232,135,10,0.3); }
+    .btn-primary:hover { background: #d47a09; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(232,135,10,0.4); }
+    .btn-danger { background: #ffeaea; color: var(--rose); border: 1.5px solid #f5c0c0; }
+    .btn-danger:hover { background: var(--rose); color: #fff; }
+    .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.8rem; border-radius: 7px; }
+
+    /* ── BIRTHDAY LIST ── */
+    .birthday-list { display: flex; flex-direction: column; gap: 0.8rem; margin-top: 0.5rem; }
+    .birthday-item {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 1rem 1.2rem;
+      background: #fffdf8;
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      transition: box-shadow 0.2s;
+      position: relative;
+    }
+    .birthday-item:hover { box-shadow: 0 4px 16px rgba(26,16,8,0.08); }
+    .birthday-item.today { border-color: var(--amber); background: #fff9f0; }
+    .birthday-item.today::before {
+      content: '🎉 Aujourd\'hui !';
+      position: absolute; top: -11px; left: 14px;
+      background: var(--amber); color: #fff;
+      font-size: 0.7rem; font-weight: 600;
+      padding: 2px 8px; border-radius: 20px; letter-spacing: 0.04em;
+    }
+    .bday-avatar {
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--amber-light), var(--amber));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0;
+    }
+    .bday-info { flex: 1; min-width: 0; }
+    .bday-name { font-weight: 600; font-size: 0.97rem; }
+    .bday-meta { font-size: 0.8rem; color: #7a6040; margin-top: 2px; }
+    .bday-countdown { font-size: 0.78rem; font-weight: 500; color: var(--sage); }
+    .bday-actions { display: flex; gap: 0.4rem; flex-shrink: 0; }
+    .empty-state { text-align: center; padding: 3rem 1rem; color: #b0906a; }
+    .empty-state .emoji { font-size: 3rem; display: block; margin-bottom: 0.8rem; }
+
+    /* ── CONFIG ── */
+    .config-section { margin-bottom: 1.5rem; }
+    .config-section h3 { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--amber); margin-bottom: 0.8rem; }
+    .info-box { background: #fff9f0; border: 1px solid #f5d9a0; border-radius: 10px; padding: 1rem 1.2rem; font-size: 0.85rem; color: #7a6040; line-height: 1.6; margin-bottom: 1rem; }
+    .info-box a { color: var(--amber); }
+    .info-box code { background: #f0e2c8; padding: 1px 5px; border-radius: 4px; font-family: monospace; font-size: 0.8rem; }
+    .status-badge { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 500; }
+    .status-ok { background: #edfaf2; color: var(--sage); }
+    .status-warn { background: #fff3e0; color: #b06000; }
+
+    /* ── NOTIFICATIONS ── */
+    #toast {
+      position: fixed; bottom: 2rem; right: 2rem;
+      padding: 0.9rem 1.4rem; border-radius: 12px;
+      font-size: 0.88rem; font-weight: 500;
+      box-shadow: 0 8px 28px rgba(26,16,8,0.18);
+      transform: translateY(80px); opacity: 0;
+      transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
+      z-index: 9999; max-width: 320px;
+    }
+    #toast.show { transform: translateY(0); opacity: 1; }
+    #toast.success { background: var(--sage); color: #fff; }
+    #toast.error { background: var(--rose); color: #fff; }
+    #toast.info { background: var(--amber); color: #fff; }
+
+    /* ── LOG ── */
+    .log-list { max-height: 260px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem; }
+    .log-item { font-size: 0.8rem; padding: 0.5rem 0.8rem; background: #f9f3ea; border-radius: 8px; color: #5a4020; }
+    .log-item time { color: #b0906a; font-family: monospace; margin-right: 0.4rem; }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="header-icon">🎂</span>
+  <h1>Rappels <span>d'Anniversaires</span></h1>
+  <p>Gérez vos anniversaires et recevez des emails automatiques</p>
+</header>
+
+<div class="container">
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('anniversaires')">🎁 Anniversaires</button>
+    <button class="tab-btn" onclick="switchTab('ajouter')">➕ Ajouter</button>
+    <button class="tab-btn" onclick="switchTab('config')">⚙️ Configuration</button>
+    <button class="tab-btn" onclick="switchTab('logs')">📋 Historique</button>
+  </div>
+
+  <!-- TAB: LISTE -->
+  <div id="tab-anniversaires" class="tab-content active">
+    <div class="card">
+      <h2>📅 Vos anniversaires <span id="count-badge" style="font-size:0.9rem;color:var(--amber);font-weight:400;"></span></h2>
+      <div id="birthday-list" class="birthday-list"></div>
+    </div>
+  </div>
+
+  <!-- TAB: AJOUTER -->
+  <div id="tab-ajouter" class="tab-content">
+    <div class="card">
+      <h2>➕ Ajouter un anniversaire</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Prénom & Nom</label>
+          <input type="text" id="inp-name" placeholder="Marie Dupont" />
+        </div>
+        <div class="form-group">
+          <label>Date d'anniversaire</label>
+          <input type="date" id="inp-date" />
+        </div>
+        <div class="form-group">
+          <label>Relation</label>
+          <select id="inp-relation">
+            <option value="famille">👨‍👩‍👧 Famille</option>
+            <option value="ami">👫 Ami(e)</option>
+            <option value="collègue">💼 Collègue</option>
+            <option value="autre">✨ Autre</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Emoji (optionnel)</label>
+          <input type="text" id="inp-emoji" placeholder="🎂" maxlength="4" />
+        </div>
+        <div class="form-group full">
+          <label>Note personnelle (optionnel)</label>
+          <textarea id="inp-note" placeholder="Ce qu'il/elle aime, idées cadeaux…"></textarea>
+        </div>
+        <div class="form-group full">
+          <button class="btn btn-primary" onclick="addBirthday()" style="width:fit-content">🎂 Ajouter l'anniversaire</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: CONFIG -->
+  <div id="tab-config" class="tab-content">
+    <div class="card">
+      <h2>⚙️ Configuration EmailJS</h2>
+
+      <div class="info-box">
+        <strong>Comment configurer l'envoi d'emails ?</strong><br>
+        1. Créez un compte gratuit sur <a href="https://www.emailjs.com" target="_blank">emailjs.com</a><br>
+        2. Ajoutez un <strong>Email Service</strong> (Gmail, Outlook…)<br>
+        3. Créez un <strong>Email Template</strong> avec les variables : <code>{{to_email}}</code>, <code>{{birthday_name}}</code>, <code>{{birthday_date}}</code>, <code>{{days_until}}</code><br>
+        4. Copiez vos clés ci-dessous et sauvegardez
+      </div>
+
+      <div class="config-section">
+        <h3>Clés EmailJS</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Public Key</label>
+            <input type="text" id="cfg-public-key" placeholder="user_xxxxxxxx" />
+          </div>
+          <div class="form-group">
+            <label>Service ID</label>
+            <input type="text" id="cfg-service-id" placeholder="service_xxxxxxxx" />
+          </div>
+          <div class="form-group">
+            <label>Template ID</label>
+            <input type="text" id="cfg-template-id" placeholder="template_xxxxxxxx" />
+          </div>
+          <div class="form-group">
+            <label>Votre email (destinataire)</label>
+            <input type="email" id="cfg-to-email" placeholder="vous@exemple.com" />
+          </div>
+          <div class="form-group full">
+            <label>Jours de rappel à l'avance</label>
+            <select id="cfg-days-before">
+              <option value="0">Le jour J uniquement</option>
+              <option value="1">1 jour avant + jour J</option>
+              <option value="3" selected>3 jours avant + jour J</option>
+              <option value="7">1 semaine avant + jour J</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:0.8rem;flex-wrap:wrap;align-items:center;margin-top:0.5rem">
+        <button class="btn btn-primary" onclick="saveConfig()">💾 Sauvegarder</button>
+        <button class="btn" style="background:#f0e8da;color:var(--ink)" onclick="testEmail()">📧 Tester l'email</button>
+        <span id="config-status"></span>
+      </div>
+
+      <div class="info-box" style="margin-top:1.5rem">
+        <strong>🤖 Automatisation quotidienne</strong><br>
+        Pour que l'application vérifie automatiquement chaque matin sans ouvrir le navigateur, utilisez <a href="https://cron-job.org" target="_blank">cron-job.org</a> (gratuit) pour appeler votre URL GitHub Pages chaque jour à 8h00.
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: LOGS -->
+  <div id="tab-logs" class="tab-content">
+    <div class="card">
+      <h2>📋 Historique des envois</h2>
+      <div id="log-list" class="log-list"></div>
+      <button class="btn btn-danger btn-sm" style="margin-top:1rem" onclick="clearLogs()">🗑 Effacer l'historique</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────
+let birthdays = JSON.parse(localStorage.getItem('bday_list') || '[]');
+let config    = JSON.parse(localStorage.getItem('bday_config') || '{}');
+let logs      = JSON.parse(localStorage.getItem('bday_logs') || '[]');
+
+// ── TABS ───────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+// ── TOAST ──────────────────────────────────────────────────────
+function toast(msg, type = 'info', duration = 3500) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `show ${type}`;
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), duration);
+}
+
+// ── ADD BIRTHDAY ───────────────────────────────────────────────
+function addBirthday() {
+  const name   = document.getElementById('inp-name').value.trim();
+  const date   = document.getElementById('inp-date').value;
+  const rel    = document.getElementById('inp-relation').value;
+  const emoji  = document.getElementById('inp-emoji').value.trim() || '🎂';
+  const note   = document.getElementById('inp-note').value.trim();
+
+  if (!name || !date) { toast('Nom et date obligatoires !', 'error'); return; }
+
+  birthdays.push({ id: Date.now(), name, date, relation: rel, emoji, note });
+  save();
+  toast(`✅ ${name} ajouté(e) !`, 'success');
+  document.getElementById('inp-name').value  = '';
+  document.getElementById('inp-date').value  = '';
+  document.getElementById('inp-emoji').value = '';
+  document.getElementById('inp-note').value  = '';
+  renderList();
+}
+
+// ── DELETE ─────────────────────────────────────────────────────
+function deleteBirthday(id) {
+  if (!confirm('Supprimer cet anniversaire ?')) return;
+  birthdays = birthdays.filter(b => b.id !== id);
+  save();
+  renderList();
+  toast('Anniversaire supprimé', 'info');
+}
+
+// ── SAVE ───────────────────────────────────────────────────────
+function save() {
+  localStorage.setItem('bday_list',   JSON.stringify(birthdays));
+  localStorage.setItem('bday_config', JSON.stringify(config));
+  localStorage.setItem('bday_logs',   JSON.stringify(logs));
+}
+
+// ── COUNTDOWN ─────────────────────────────────────────────────
+function daysUntil(dateStr) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const bday  = new Date(dateStr);
+  const next  = new Date(today.getFullYear(), bday.getMonth(), bday.getDate());
+  if (next < today) next.setFullYear(today.getFullYear() + 1);
+  return Math.round((next - today) / 86400000);
+}
+
+function formatDate(dateStr) {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
+}
+
+// ── RENDER LIST ────────────────────────────────────────────────
+function renderList() {
+  const container = document.getElementById('birthday-list');
+  document.getElementById('count-badge').textContent =
+    birthdays.length ? `(${birthdays.length})` : '';
+
+  if (!birthdays.length) {
+    container.innerHTML = `<div class="empty-state"><span class="emoji">🎈</span>Aucun anniversaire enregistré.<br>Ajoutez-en un dans l'onglet "Ajouter".</div>`;
+    return;
+  }
+
+  const sorted = [...birthdays].sort((a, b) => daysUntil(a.date) - daysUntil(b.date));
+  container.innerHTML = sorted.map(b => {
+    const days   = daysUntil(b.date);
+    const isToday = days === 0;
+    const age    = new Date().getFullYear() - new Date(b.date).getFullYear();
+    const countdown = isToday ? '🎉 C\'est aujourd\'hui !' : `dans ${days} jour${days>1?'s':''}`;
+    return `
+      <div class="birthday-item ${isToday ? 'today' : ''}">
+        <div class="bday-avatar">${b.emoji}</div>
+        <div class="bday-info">
+          <div class="bday-name">${b.name}</div>
+          <div class="bday-meta">${formatDate(b.date)} · ${b.relation} · ${age} ans</div>
+          ${b.note ? `<div class="bday-meta" style="font-style:italic;margin-top:2px">${b.note}</div>` : ''}
+          <div class="bday-countdown">${countdown}</div>
+        </div>
+        <div class="bday-actions">
+          <button class="btn btn-danger btn-sm" onclick="deleteBirthday(${b.id})">🗑</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ── SAVE CONFIG ────────────────────────────────────────────────
+function saveConfig() {
+  config = {
+    publicKey:   document.getElementById('cfg-public-key').value.trim(),
+    serviceId:   document.getElementById('cfg-service-id').value.trim(),
+    templateId:  document.getElementById('cfg-template-id').value.trim(),
+    toEmail:     document.getElementById('cfg-to-email').value.trim(),
+    daysBefore:  parseInt(document.getElementById('cfg-days-before').value),
+  };
+  save();
+  const st = document.getElementById('config-status');
+  if (config.publicKey && config.serviceId && config.templateId && config.toEmail) {
+    st.innerHTML = '<span class="status-badge status-ok">✅ Configuration complète</span>';
+    emailjs.init(config.publicKey);
+  } else {
+    st.innerHTML = '<span class="status-badge status-warn">⚠️ Champs manquants</span>';
+  }
+  toast('Configuration sauvegardée !', 'success');
+}
+
+function loadConfig() {
+  if (config.publicKey)  document.getElementById('cfg-public-key').value  = config.publicKey;
+  if (config.serviceId)  document.getElementById('cfg-service-id').value  = config.serviceId;
+  if (config.templateId) document.getElementById('cfg-template-id').value = config.templateId;
+  if (config.toEmail)    document.getElementById('cfg-to-email').value    = config.toEmail;
+  if (config.daysBefore !== undefined) document.getElementById('cfg-days-before').value = config.daysBefore;
+}
+
+// ── SEND EMAIL ─────────────────────────────────────────────────
+async function sendEmail(birthday, daysUntilBday) {
+  if (!config.publicKey || !config.serviceId || !config.templateId) {
+    toast('EmailJS non configuré !', 'error'); return;
+  }
+  emailjs.init(config.publicKey);
+  const params = {
+    to_email:       config.toEmail,
+    birthday_name:  birthday.name,
+    birthday_date:  formatDate(birthday.date),
+    days_until:     daysUntilBday === 0 ? "C'est aujourd'hui !" : `dans ${daysUntilBday} jour(s)`,
+    relation:       birthday.relation,
+    note:           birthday.note || '',
+  };
+  try {
+    await emailjs.send(config.serviceId, config.templateId, params);
+    addLog(`📧 Email envoyé pour ${birthday.name} (${daysUntilBday === 0 ? "aujourd'hui" : `J-${daysUntilBday}`})`);
+    return true;
+  } catch(err) {
+    addLog(`❌ Erreur pour ${birthday.name}: ${err.text || err}`);
+    return false;
+  }
+}
+
+async function testEmail() {
+  if (!config.publicKey) { toast('Sauvegardez la configuration d\'abord !', 'error'); return; }
+  toast('Envoi du mail de test…', 'info');
+  const ok = await sendEmail({ name: 'Test', relation: 'test', date: new Date().toISOString(), note: 'Ceci est un test' }, 0);
+  toast(ok ? '✅ Email de test envoyé !' : '❌ Échec — vérifiez vos clés', ok ? 'success' : 'error');
+}
+
+// ── DAILY CHECK ────────────────────────────────────────────────
+async function dailyCheck() {
+  const today    = new Date().toDateString();
+  const lastCheck = localStorage.getItem('bday_last_check');
+  if (lastCheck === today) return; // déjà vérifié aujourd'hui
+  localStorage.setItem('bday_last_check', today);
+
+  if (!config.publicKey) return;
+  const threshold = config.daysBefore ?? 3;
+  let sent = 0;
+  for (const b of birthdays) {
+    const days = daysUntil(b.date);
+    if (days <= threshold) {
+      const ok = await sendEmail(b, days);
+      if (ok) sent++;
+    }
+  }
+  if (sent > 0) toast(`📧 ${sent} rappel(s) envoyé(s) !`, 'success');
+  renderLogs();
+}
+
+// ── LOGS ───────────────────────────────────────────────────────
+function addLog(msg) {
+  const now = new Date().toLocaleString('fr-FR');
+  logs.unshift({ time: now, msg });
+  if (logs.length > 50) logs.pop();
+  save();
+}
+
+function renderLogs() {
+  const container = document.getElementById('log-list');
+  if (!logs.length) {
+    container.innerHTML = '<div class="empty-state" style="padding:1.5rem"><span class="emoji">📭</span>Aucun historique</div>';
+    return;
+  }
+  container.innerHTML = logs.map(l =>
+    `<div class="log-item"><time>${l.time}</time>${l.msg}</div>`
+  ).join('');
+}
+
+function clearLogs() {
+  logs = []; save(); renderLogs(); toast('Historique effacé', 'info');
+}
+
+// ── INIT ───────────────────────────────────────────────────────
+loadConfig();
+renderList();
+renderLogs();
+dailyCheck();
+
+if (config.publicKey) {
+  emailjs.init(config.publicKey);
+  document.getElementById('config-status').innerHTML =
+    '<span class="status-badge status-ok">✅ Configuration complète</span>';
+}
+</script>
+</body>
+</html>
