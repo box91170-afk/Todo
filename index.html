@@ -1,0 +1,567 @@
+
+
+<!DOCTYPE html>
+<html lang="fr" class="h-full transition-colors duration-500">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ma To-Do List Premium</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .scrollbar-none::-webkit-scrollbar { display: none; }
+        .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        :root {
+            --bg-color: #020617; 
+            --glass-bg: rgba(15, 23, 42, 0.85);
+            --text-color: #f1f5f9;
+            --text-muted: #94a3b8;
+            --accent-start: #4f46e5;
+            --accent-end: #c026d3;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --orbe-1: rgba(79, 70, 229, 0.3);
+            --orbe-2: rgba(192, 38, 211, 0.2);
+            --orbe-3: rgba(6, 182, 212, 0.2);
+            --shadow-accent: rgba(79, 70, 229, 0.25);
+        }
+
+        .theme-dark-neon {
+            --bg-color: #030712;
+            --glass-bg: rgba(17, 24, 39, 0.85);
+            --text-color: #f9fafb;
+            --text-muted: #9ca3af;
+            --accent-start: #6366f1;
+            --accent-end: #d946ef;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --orbe-1: rgba(99, 102, 241, 0.3);
+            --orbe-2: rgba(217, 70, 239, 0.2);
+            --orbe-3: rgba(14, 165, 233, 0.2);
+            --shadow-accent: rgba(99, 102, 241, 0.3);
+        }
+        
+        .theme-cyber-pink {
+            --bg-color: #0f051d;
+            --glass-bg: rgba(24, 12, 44, 0.85);
+            --text-color: #fdf2ff;
+            --text-muted: #a78bfa;
+            --accent-start: #ec4899;
+            --accent-end: #06b6d4;
+            --border-color: rgba(236, 72, 153, 0.15);
+            --orbe-1: rgba(236, 72, 153, 0.35);
+            --orbe-2: rgba(6, 115, 244, 0.25);
+            --orbe-3: rgba(167, 139, 250, 0.2);
+            --shadow-accent: rgba(236, 72, 153, 0.3);
+        }
+
+        .theme-sunset-vibes {
+            --bg-color: #1a0510;
+            --glass-bg: rgba(38, 12, 28, 0.85);
+            --text-color: #fff1f2;
+            --text-muted: #fda4af;
+            --accent-start: #f43f5e;
+            --accent-end: #f97316;
+            --border-color: rgba(244, 63, 94, 0.15);
+            --orbe-1: rgba(244, 63, 94, 0.35);
+            --orbe-2: rgba(249, 115, 22, 0.25);
+            --orbe-3: rgba(236, 72, 153, 0.2);
+            --shadow-accent: rgba(244, 63, 94, 0.3);
+        }
+        
+        .theme-moss-forest {
+            --bg-color: #022c22;
+            --glass-bg: rgba(4, 47, 38, 0.85);
+            --text-color: #f0fdf4;
+            --text-muted: #a7f3d0;
+            --accent-start: #10b981;
+            --accent-end: #84cc16;
+            --border-color: rgba(16, 185, 129, 0.15);
+            --orbe-1: rgba(16, 185, 129, 0.35);
+            --orbe-2: rgba(132, 204, 22, 0.2);
+            --orbe-3: rgba(20, 184, 166, 0.2);
+            --shadow-accent: rgba(16, 185, 129, 0.3);
+        }
+
+        .theme-nordic-frost {
+            --bg-color: #f1f5f9;
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --text-color: #0f172a;
+            --text-muted: #475569;
+            --accent-start: #0284c7;
+            --accent-end: #0d9488;
+            --border-color: rgba(15, 23, 42, 0.08);
+            --orbe-1: rgba(14, 165, 233, 0.15);
+            --orbe-2: rgba(20, 184, 166, 0.15);
+            --orbe-3: rgba(165, 180, 252, 0.2);
+            --shadow-accent: rgba(14, 165, 233, 0.15);
+        }
+
+        .theme-japandi-light {
+            --bg-color: #fafaf9;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --text-color: #1c1917;
+            --text-muted: #57534e;
+            --accent-start: #78350f;
+            --accent-end: #78716c;
+            --border-color: rgba(28, 25, 23, 0.06);
+            --orbe-1: rgba(217, 119, 6, 0.1);
+            --orbe-2: rgba(120, 113, 108, 0.1);
+            --orbe-3: rgba(231, 229, 228, 0.15);
+            --shadow-accent: rgba(120, 113, 108, 0.1);
+        }
+
+        .theme-dracula-vamp {
+            --bg-color: #181825;
+            --glass-bg: rgba(30, 30, 46, 0.85);
+            --text-color: #cdd6f4;
+            --text-muted: #bac2de;
+            --accent-start: #cba6f7;
+            --accent-end: #a6e3a1;
+            --border-color: rgba(203, 166, 247, 0.15);
+            --orbe-1: rgba(203, 166, 247, 0.25);
+            --orbe-2: rgba(166, 227, 161, 0.15);
+            --orbe-3: rgba(137, 180, 250, 0.2);
+            --shadow-accent: rgba(203, 166, 247, 0.25);
+        }
+
+        .theme-minimal-mono {
+            --bg-color: #000000;
+            --glass-bg: rgba(10, 10, 10, 0.9);
+            --text-color: #ffffff;
+            --text-muted: #a3a3a3;
+            --accent-start: #ffffff;
+            --accent-end: #737373;
+            --border-color: rgba(255, 255, 255, 0.15);
+            --orbe-1: rgba(255, 255, 255, 0.05);
+            --orbe-2: rgba(255, 255, 255, 0.02);
+            --orbe-3: rgba(255, 255, 255, 0.05);
+            --shadow-accent: rgba(255, 255, 255, 0.1);
+        }
+
+        body { background-color: var(--bg-color); color: var(--text-color); }
+        .bg-glass { background-color: var(--glass-bg); border-color: var(--border-color); }
+        .text-theme { color: var(--text-color); }
+        .text-muted-theme { color: var(--text-muted); }
+        .bg-accent { background-image: linear-gradient(to right, var(--accent-start), var(--accent-end)); }
+        .border-theme { border-color: var(--border-color); }
+        .shadow-accent-btn { box-shadow: 0 10px 15px -3px var(--shadow-accent); }
+        
+        .bg-orbe-1 { background-color: var(--orbe-1); }
+        .bg-orbe-2 { background-color: var(--orbe-2); }
+        .bg-orbe-3 { background-color: var(--orbe-3); }
+
+        @keyframes pulse-slow {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-20px) scale(1.05); }
+        }
+        .animate-blob { animation: pulse-slow 8s infinite ease-in-out; }
+        .animate-blob-delayed { animation: pulse-slow 12s infinite ease-in-out; animation-delay: 2s; }
+
+        .task-exit {
+            animation: slide-out-right 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        @keyframes slide-out-right {
+            to { transform: translateX(100%); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="min-h-screen overflow-y-auto flex items-center justify-center relative p-2 sm:p-4 transition-colors duration-500">
+
+    <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="absolute -top-40 -left-40 w-[500px] h-[500px] rounded-full blur-[120px] animate-blob bg-orbe-1 transition-all duration-700"></div>
+        <div class="absolute top-1/3 -right-40 w-[500px] h-[500px] rounded-full blur-[140px] animate-blob-delayed bg-orbe-2 transition-all duration-700"></div>
+        <div class="absolute -bottom-40 left-1/3 w-[500px] h-[500px] rounded-full blur-[120px] animate-blob bg-orbe-3 transition-all duration-700"></div>
+    </div>
+
+    <main class="w-full max-w-md bg-glass backdrop-blur-xl rounded-3xl border p-4 sm:p-5 shadow-2xl relative z-10 flex flex-col max-h-[92vh] sm:max-h-[85vh] transition-all duration-500 border-theme">
+        
+        <header class="flex items-center justify-between mb-4 pb-3 border-b flex-shrink-0 gap-2 border-theme">
+            <div class="flex gap-1 bg-white/5 p-1 rounded-xl border border-theme">
+                <button onclick="switchTab('active')" id="tab-active" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-white/10 text-theme flex items-center gap-1.5">
+                    <span>Tâches</span>
+                    <span id="count-active" class="px-1.5 py-0.2 bg-white/10 text-[10px] rounded-md transition-all">0</span>
+                </button>
+                <button onclick="switchTab('deleted')" id="tab-deleted" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white flex items-center gap-1.5">
+                    <span>Corbeille</span>
+                    <span id="count-deleted" class="px-1.5 py-0.2 bg-white/10 text-[10px] rounded-md text-rose-300">0</span>
+                </button>
+            </div>
+            
+            <div class="flex items-center gap-1 relative">
+                <button onclick="shareSystemDirect()" class="p-2.5 hover:bg-white/10 text-slate-400 hover:text-indigo-400 rounded-xl transition-all" title="Partager la liste" id="btn-share">
+                    <i data-lucide="share-2" class="w-4.5 h-4.5"></i>
+                </button>
+
+                <button onclick="toggleThemeMenu()" class="p-2.5 hover:bg-white/10 text-slate-400 hover:text-indigo-400 rounded-xl transition-all" title="Changer de thème" id="btn-theme">
+                    <i data-lucide="palette" class="w-4.5 h-4.5"></i>
+                </button>
+                
+                <div id="theme-dropdown" class="hidden absolute right-12 top-0 mt-2 w-52 bg-slate-900/95 border border-white/10 rounded-2xl shadow-2xl py-1.5 z-50 backdrop-blur-lg border-theme">
+                    <div class="px-3 py-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Thèmes sombres</div>
+                    <button onclick="setTheme('dark-neon')" class="w-full text-left px-3 py-1.5 text-xs text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-gradient-to-r from-indigo-500 to-fuchsia-500"></span>Dark Neon
+                    </button>
+                    <button onclick="setTheme('cyber-pink')" class="w-full text-left px-3 py-1.5 text-xs text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-gradient-to-r from-pink-500 to-cyan-500"></span>Cyberpink Neon
+                    </button>
+                    <button onclick="setTheme('sunset-vibes')" class="w-full text-left px-3 py-1.5 text-xs text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-gradient-to-r from-rose-500 to-orange-500"></span>Sunset Vibes
+                    </button>
+                    <button onclick="setTheme('moss-forest')" class="w-full text-left px-3 py-1.5 text-xs text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-gradient-to-r from-emerald-500 to-lime-500"></span>Moss Forest
+                    </button>
+                    <button onclick="setTheme('dracula-vamp')" class="w-full text-left px-3 py-1.5 text-xs text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-gradient-to-r from-purple-500 to-emerald-400"></span>Dracula Vamp
+                    </button>
+                    <button onclick="setTheme('minimal-mono')" class="w-full text-left px-3 py-1.5 text-xs text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-gradient-to-r from-white to-neutral-500"></span>Minimal Mono
+                    </button>
+                    
+                    <div class="px-3 py-1 mt-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider border-t border-white/5 pt-1.5">Thèmes clairs</div>
+                    <button onclick="setTheme('nordic-frost')" class="w-full text-left px-3 py-1.5 text-xs text-slate-700 hover:bg-slate-100 hover:text-black flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-gradient-to-r from-sky-500 to-teal-500"></span>Nordic Frost
+                    </button>
+                    <button onclick="setTheme('japandi-light')" class="w-full text-left px-3 py-1.5 text-xs text-slate-700 hover:bg-slate-100 hover:text-black flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-gradient-to-r from-amber-800 to-stone-500"></span>Japandi Light
+                    </button>
+                </div>
+
+                <button onclick="exportData()" class="p-2.5 hover:bg-white/10 text-slate-400 hover:text-emerald-400 rounded-xl transition-all" title="Exporter en .txt">
+                    <i data-lucide="download" class="w-4.5 h-4.5"></i>
+                </button>
+            </div>
+        </header>
+
+        <div id="toast" class="absolute top-14 left-1/2 transform -translate-x-1/2 -translate-y-4 opacity-0 scale-95 bg-slate-900/90 text-white text-[11px] font-semibold px-4 py-2.5 rounded-xl shadow-xl border border-white/10 flex items-center gap-2 transition-all duration-300 pointer-events-none z-50">
+            <span id="toast-message">Notification</span>
+        </div>
+
+        <form id="todo-form" class="flex gap-2 mb-4 flex-shrink-0 items-stretch" autocomplete="off">
+            <input type="text" id="task-input" required placeholder="Nouvelle tâche..." autofocus
+                class="flex-1 px-4 py-3 bg-white/5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 text-theme placeholder-slate-500 transition-all text-sm border-theme">
+            
+            <button type="button" id="btn-voice" onclick="toggleVoiceInput()" class="px-3.5 bg-white/5 border text-slate-400 rounded-xl hover:bg-white/10 hover:text-indigo-400 transition-all border-theme" title="Dicter">
+                <i data-lucide="mic" class="w-5 h-5" id="mic-icon"></i>
+            </button>
+
+            <button type="submit" class="px-4 bg-accent shadow-accent-btn active:scale-95 text-white rounded-xl transition-all flex items-center justify-center">
+                <i data-lucide="plus" class="w-5 h-5"></i>
+            </button>
+        </form>
+
+        <div id="trash-header" class="hidden justify-between items-center mb-3 flex-shrink-0">
+            <span class="text-xs text-slate-400 italic">Corbeille</span>
+            <button onclick="emptyTrash()" class="text-[11px] text-rose-400 hover:text-rose-300 flex items-center gap-1 font-bold">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Vider la corbeille
+            </button>
+        </div>
+
+        <div class="flex-grow overflow-y-auto pr-1 space-y-2 mb-1 scrollbar-none">
+            <div id="tasks-container" class="space-y-2"></div>
+            
+            <div id="empty-state" class="hidden flex-col items-center justify-center py-16 text-center text-slate-500">
+                <div class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center mb-3 border border-theme">
+                    <i data-lucide="sparkles" class="w-5 h-5 text-accent-start" id="empty-icon"></i>
+                </div>
+                <p id="empty-text" class="text-xs font-semibold px-4 text-muted-theme">Aucune tâche</p>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        let tasks = [
+            { id: '1', title: 'Imaginer une identité visuelle', completed: false, deleted: false },
+            { id: '2', title: 'Aller courir 30 minutes', completed: true, deleted: false }
+        ];
+        let currentTab = 'active';
+
+        const todoForm = document.getElementById('todo-form');
+        const taskInput = document.getElementById('task-input');
+        const tasksContainer = document.getElementById('tasks-container');
+        const trashHeader = document.getElementById('trash-header');
+        const emptyState = document.getElementById('empty-state');
+        const emptyIcon = document.getElementById('empty-icon');
+        const emptyText = document.getElementById('empty-text');
+        const countActive = document.getElementById('count-active');
+        const countDeleted = document.getElementById('count-deleted');
+        const themeDropdown = document.getElementById('theme-dropdown');
+
+        const btnVoice = document.getElementById('btn-voice');
+        const micIcon = document.getElementById('mic-icon');
+        let recognition = null;
+        let isListening = false;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            todoForm.addEventListener('submit', handleAddTask);
+            
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('#theme-dropdown') && !e.target.closest('#btn-theme')) {
+                    themeDropdown.classList.add('hidden');
+                }
+            });
+
+            initVoiceRecognition();
+            renderTasks();
+            taskInput.focus();
+        });
+
+        function initVoiceRecognition() {
+            window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (window.SpeechRecognition) {
+                recognition = new SpeechRecognition();
+                recognition.lang = 'fr-FR';
+                recognition.interimResults = false;
+                recognition.maxAlternatives = 1;
+
+                recognition.onstart = () => {
+                    isListening = true;
+                    btnVoice.classList.add('bg-indigo-500/10', 'text-indigo-400', 'border-indigo-500');
+                    micIcon.setAttribute('data-lucide', 'mic-off');
+                    lucide.createIcons();
+                    taskInput.placeholder = "Écoute en cours...";
+                };
+
+                recognition.onend = () => {
+                    isListening = false;
+                    btnVoice.classList.remove('bg-indigo-500/10', 'text-indigo-400', 'border-indigo-500');
+                    micIcon.setAttribute('data-lucide', 'mic');
+                    lucide.createIcons();
+                    taskInput.placeholder = "Nouvelle tâche...";
+                    taskInput.focus();
+                };
+
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript.trim();
+                    if (transcript) {
+                        taskInput.value = transcript;
+                        todoForm.requestSubmit();
+                    }
+                };
+
+                recognition.onerror = () => { stopListening(); };
+            } else {
+                btnVoice.style.display = 'none';
+            }
+        }
+
+        function toggleVoiceInput() {
+            if (!recognition) return;
+            if (isListening) { recognition.stop(); } else { recognition.start(); }
+        }
+
+        function toggleThemeMenu() { themeDropdown.classList.toggle('hidden'); }
+        function setTheme(themeName) {
+            themeDropdown.classList.add('hidden');
+            document.body.className = `min-h-screen overflow-y-auto flex items-center justify-center relative p-2 sm:p-4 transition-colors duration-500 theme-${themeName}`;
+            taskInput.focus();
+        }
+
+        async function shareSystemDirect() {
+            const activeList = tasks.filter(t => !t.deleted);
+            if (activeList.length === 0) {
+                showToast("Votre liste est vide, rien à partager ! 🤷‍♂️");
+                return;
+            }
+
+            const formattedDate = new Date().toLocaleDateString('fr-FR');
+            let shareText = `📝 Ma liste de tâches (${formattedDate}) :\n\n`;
+            activeList.forEach(t => {
+                shareText += `${t.completed ? "✅ [Fait]  " : "⬜ [À faire] "} ${t.title}\n`;
+            });
+            shareText += `\nEnvoyé depuis mon application To-Do.`;
+
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: `Ma To-Do Liste du ${formattedDate}`,
+                        text: shareText
+                    });
+                    showToast("Partagé avec succès ! 🚀");
+                } catch (err) {
+                    fallbackCopyToClipboard(shareText);
+                }
+            } else {
+                fallbackCopyToClipboard(shareText);
+            }
+        }
+
+        function fallbackCopyToClipboard(text) {
+            const tempTextArea = document.createElement("textarea");
+            tempTextArea.value = text;
+            tempTextArea.style.position = "fixed";
+            document.body.appendChild(tempTextArea);
+            tempTextArea.focus();
+            tempTextArea.select();
+            
+            try {
+                document.execCommand('copy');
+                showToast("Liste copiée ! Collez-la sur Gmail, WhatsApp, Notes... 📋");
+            } catch (err) {
+                showToast("Partage indisponible.");
+            }
+            document.body.removeChild(tempTextArea);
+            taskInput.focus();
+        }
+
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toast-message');
+        function showToast(message) {
+            toastMessage.textContent = message;
+            toast.classList.remove('opacity-0', 'scale-95', '-translate-y-4');
+            toast.classList.add('opacity-100', 'scale-100', 'translate-y-0');
+            
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'scale-95', '-translate-y-4');
+                toast.classList.remove('opacity-100', 'scale-100', 'translate-y-0');
+            }, 3000);
+        }
+
+        function handleAddTask(e) {
+            e.preventDefault();
+            const title = taskInput.value.trim();
+            if (!title) return;
+            
+            tasks.unshift({ id: Date.now().toString(), title: title, completed: false, deleted: false });
+            taskInput.value = '';
+            showToast("Tâche ajoutée ! ✨");
+            renderTasks();
+            taskInput.focus();
+        }
+
+        function moveToTrash(id, element) {
+            if (element) {
+                element.classList.add('task-exit');
+                element.addEventListener('animationend', () => { executeMoveToTrash(id); });
+            } else {
+                executeMoveToTrash(id);
+            }
+        }
+
+        function executeMoveToTrash(id) {
+            tasks = tasks.map(t => t.id === id ? { ...t, deleted: true } : t); 
+            showToast("Tâche mise à la corbeille 🗑️");
+            renderTasks();
+            taskInput.focus();
+        }
+
+        function restoreTask(id) { 
+            tasks = tasks.map(t => t.id === id ? { ...t, deleted: false } : t); 
+            showToast("Tâche restaurée ! 🔄");
+            renderTasks(); 
+            taskInput.focus();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                themeDropdown.classList.add('hidden');
+            }
+        });
+
+        function permanentDeleteTask(id) { 
+            tasks = tasks.filter(t => t.id !== id); 
+            showToast("Tâche supprimée définitivement.");
+            renderTasks(); 
+            taskInput.focus();
+        }
+
+        function emptyTrash() { 
+            tasks = tasks.filter(t => !t.deleted); 
+            showToast("Corbeille vidée ! 🧼");
+            renderTasks(); 
+            taskInput.focus();
+        }
+
+        function toggleTask(id) { 
+            if (currentTab !== 'active') return; 
+            tasks = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t); 
+            renderTasks(); 
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.getElementById('tab-active').className = tab === 'active' ? "px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-white/10 text-theme flex items-center gap-1.5" : "px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white flex items-center gap-1.5";
+            document.getElementById('tab-deleted').className = tab === 'deleted' ? "px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-white/10 text-theme flex items-center gap-1.5" : "px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white flex items-center gap-1.5";
+            
+            todoForm.style.display = tab === 'active' ? 'flex' : 'none';
+            trashHeader.style.display = tab === 'deleted' ? 'flex' : 'none';
+            renderTasks();
+            taskInput.focus();
+        }
+
+        function exportData() {
+            const activeList = tasks.filter(t => !t.deleted);
+            let fileContent = `=== MA TO-DO LISTE (${new Date().toLocaleDateString('fr-FR')}) ===\n\n`;
+            activeList.forEach(t => fileContent += `${t.completed ? "[x]" : "[ ]"} ${t.title}\n`);
+            
+            const blob = new Blob([fileContent], { type: "text/plain;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a'); 
+            link.href = url; 
+            link.download = "todo-liste.txt"; 
+            link.click();
+            URL.revokeObjectURL(url);
+            showToast("Liste exportée en .txt 📥");
+        }
+
+        function renderTasks() {
+            tasksContainer.innerHTML = '';
+            const activeCount = tasks.filter(t => !t.deleted).length;
+            const deletedCount = tasks.filter(t => t.deleted).length;
+            
+            countActive.textContent = activeCount;
+            countDeleted.textContent = deletedCount;
+            
+            const currentList = tasks.filter(t => currentTab === 'active' ? !t.deleted : t.deleted);
+
+            if (currentList.length === 0) {
+                emptyState.style.display = 'flex';
+                emptyIcon.setAttribute('data-lucide', currentTab === 'active' ? 'sparkles' : 'trash');
+                emptyText.textContent = currentTab === 'active' ? "Tout est fait ! Profitez de votre journée." : "La corbeille est vide.";
+            } else {
+                emptyState.style.display = 'none';
+                currentList.forEach(task => {
+                    const div = document.createElement('div');
+                    div.id = `task-row-${task.id}`;
+                    
+                    if (currentTab === 'active') {
+                        div.className = `flex items-center justify-between p-2.5 rounded-xl border border-theme transition-all duration-150 ${task.completed ? 'bg-slate-950/40 text-slate-500' : 'bg-white/5 text-slate-200 hover:bg-white/10'}`;
+                        div.innerHTML = `
+                            <div class="flex items-center gap-3 flex-1 min-w-0 cursor-pointer py-1.5 pl-1.5" onclick="toggleTask('${task.id}')">
+                                <div class="w-5 h-5 rounded-lg border flex items-center justify-center transition-all duration-150 flex-shrink-0 ${task.completed ? 'bg-accent border-transparent text-white' : 'border-white/20 hover:border-white/40'}">
+                                    ${task.completed ? '<i data-lucide="check" class="w-3 h-3 stroke-[3]"></i>' : ''}
+                                </div>
+                                <span class="text-xs font-semibold truncate ${task.completed ? 'line-through opacity-60' : ''}">${escapeHTML(task.title)}</span>
+                            </div>
+                            <button onclick="moveToTrash('${task.id}', document.getElementById('task-row-${task.id}'))" class="text-slate-500 hover:text-rose-400 p-3 rounded-lg transition-colors flex-shrink-0" title="Envoyer à la corbeille">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        `;
+                    } else {
+                        div.className = "flex items-center justify-between p-2.5 rounded-xl border border-theme bg-slate-950/30 text-slate-400";
+                        div.innerHTML = `
+                            <span class="text-xs font-semibold truncate flex-1 min-w-0 pl-1.5">${escapeHTML(task.title)}</span>
+                            <div class="flex items-center gap-1 flex-shrink-0">
+                                <button onclick="restoreTask('${task.id}')" class="text-emerald-500 hover:text-emerald-400 p-2.5" title="Restaurer">
+                                    <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                                </button>
+                                <button onclick="permanentDeleteTask('${task.id}')" class="text-rose-500 hover:text-rose-400 p-2.5" title="Supprimer définitivement">
+                                    <i data-lucide="x-circle" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        `;
+                    }
+                    tasksContainer.appendChild(div);
+                });
+            }
+            lucide.createIcons();
+        }
+
+        function escapeHTML(str) { return str.replace(/[&<>'"]/g, t => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[t] || t)); }
+    </script>
+</body>
+</html>
